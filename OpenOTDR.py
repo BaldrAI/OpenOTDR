@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys, os, re
 from collections import deque
 from threading import Lock
@@ -8,10 +10,16 @@ from scipy.ndimage import zoom
 from scipy.signal import find_peaks
 from pyOTDR import sorparse
 from matplotlib.figure import Figure
+from matplotlib import cm, colors
 from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg as FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
 import mainwindow
 
 window_len = 0
+
+def round_sig(x, n):
+    if x < 1:
+        return round(x,1)
+    return round(x, -int(np.floor(np.sign(x) * np.log10(abs(x)))) + n)
 
 def _low_return_filter_trace(a_raw_trace, window_len):
     samples = np.r_[a_raw_trace[0][window_len-1:0:-1], a_raw_trace[0], a_raw_trace[0][-2:-window_len-1:-1]]
@@ -54,6 +62,14 @@ def find_edges(a_differential_trace):
     a_peaks = find_peaks(a_abs_trace, 0.00125, width=5, distance=150)
     return  [a_peaks[0], [a_differential_trace[1][0][peak] for peak in a_peaks[0]], [a_differential_trace[1][1][peak] for peak in a_peaks[0]]]
 
+def wavelength_to_rgb(s_wavelength):
+    wavelength = int(s_wavelength[:-3])
+    norm = colors.Normalize(vmin=1250, vmax=1650, clip=True)
+    mapper = cm.ScalarMappable(norm=norm, cmap=cm.jet_r)
+    r,g,b,a = mapper.to_rgba(wavelength)
+    return "#{:02X}{:02X}{:02X}".format(int(r*255),int(g*255),int(b*255))
+    
+
 class CustomNavigationToolbar(NavigationToolbar):
     toolitems = (('Home', 'Reset original view', 'home', 'home'), 
                 ('Back', 'Back to previous view', 'back', 'back'), 
@@ -62,7 +78,6 @@ class CustomNavigationToolbar(NavigationToolbar):
                 ('Pan', 'Pan axes with left mouse, zoom with right', 'move', 'pan'), 
                 ('Zoom', 'Zoom to rectangle', 'zoom_to_rect', 'zoom'))
     
-
 
 class NaturalSortFilterProxyModel(QtCore.QSortFilterProxyModel):
     @staticmethod
@@ -140,12 +155,14 @@ class MainWindow(QtWidgets.QMainWindow):
         plt = fig.add_subplot(1,1,1)
         if self.raw_traces:
             for trace_index, d_final_data in enumerate(self.raw_traces):
-                plt.plot(d_final_data["trace"][1], d_final_data["trace"][0])
+                wavelength = d_final_data["meta"]["GenParams"]["wavelength"]
+                plt.plot(d_final_data["trace"][1], d_final_data["trace"][0], label=wavelength, color=wavelength_to_rgb(wavelength))
         if self.canvas:
             self.ui.graphLayout.removeWidget(self.canvas)
             self.canvas.close()
             self.ui.graphLayout.removeWidget(self.toolbar)
             self.toolbar.close()
+        fig.legend()
         self.canvas = FigureCanvas(fig)
         self.toolbar = CustomNavigationToolbar(self.canvas, self, coordinates=True)
         self.ui.graphLayout.addWidget(self.canvas)
@@ -211,6 +228,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 item = index.model().itemFromIndex(index)
                 filename = item.text()
                 self.project_model.removeRow(index.row())
+                del self.raw_traces[index.row()]
             self._draw()
                 
     def recalculate_events(self):
@@ -222,12 +240,17 @@ class MainWindow(QtWidgets.QMainWindow):
             d_events = {}
             for trace_features in self.raw_features:
                 for index, feature in enumerate(trace_features[2]):
-                    feature_position = int(feature)
-                    if feature_position not in d_events:
+                    feature_position = round_sig(feature, 1)
+                    if feature_position not in d_events and feature_position-0.1 not in d_events and feature_position+0.1 not in d_events:
                         d_events[feature_position] = {
                             "indexes": []
                             }
-                    d_events[feature_position]["indexes"].append(trace_features[0][index])
+                    if feature_position in d_events:
+                        d_events[feature_position]["indexes"].append(trace_features[0][index])
+                    elif feature_position-0.1 in d_events:
+                         d_events[feature_position-0.1]["indexes"].append(trace_features[0][index])
+                    elif feature_position+0.1 in d_events:
+                         d_events[feature_position+0.1]["indexes"].append(trace_features[0][index])
             self.events_model.clear()
             self.events_model.setHorizontalHeaderLabels(['Event', 'Distance (km)', 'Loss (dB)', 'Dispersion factor', 'Description'])
             for position, meta_data in d_events.items():
