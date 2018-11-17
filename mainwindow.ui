@@ -68,40 +68,6 @@
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="QPushButton" name="openProject">
-             <property name="icon">
-              <iconset theme="folder-open">
-               <normaloff/>
-              </iconset>
-             </property>
-             <property name="flat">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="saveProject">
-             <property name="icon">
-              <iconset theme="document-save">
-               <normaloff/>
-              </iconset>
-             </property>
-             <property name="flat">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="printReport">
-             <property name="icon">
-              <iconset theme="document-print"/>
-             </property>
-             <property name="flat">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QPushButton" name="addTrace">
              <property name="autoFillBackground">
               <bool>false</bool>
@@ -146,7 +112,45 @@
               </sizepolicy>
              </property>
              <property name="icon">
-              <iconset theme="view-refresh"/>
+              <iconset theme="view-refresh">
+               <normaloff/>
+              </iconset>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="saveProject">
+             <property name="icon">
+              <iconset theme="document-save">
+               <normaloff/>
+              </iconset>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="openProject">
+             <property name="icon">
+              <iconset theme="folder-open">
+               <normaloff/>
+              </iconset>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="printReport">
+             <property name="icon">
+              <iconset theme="document-print">
+               <normaloff/>
+              </iconset>
              </property>
              <property name="flat">
               <bool>true</bool>

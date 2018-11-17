@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys, os, re
+import sys, os, re, json
 from collections import deque
 from threading import Lock
 
@@ -105,9 +105,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.events_proxy_model.sort(1, QtCore.Qt.AscendingOrder)
         self.ui.eventTableView.setModel(self.events_proxy_model)
         self.ui.openProject.clicked.connect(self.open_project)
-        self.ui.openProject.setDisabled(True)
         self.ui.saveProject.clicked.connect(self.save_project)
-        self.ui.saveProject.setDisabled(True)
         self.ui.printReport.clicked.connect(self.print_pdf)
         self.ui.printReport.setDisabled(True)
         self.ui.addTrace.clicked.connect(self.add_trace)
@@ -116,13 +114,20 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas = None
         self.raw_features = None
         self.raw_traces = None
+        self.files = {}
+        self.meta = {}
         self.busy = Lock()
         self._draw()
         
-    def _load_file(self, url):
+    def _load_file(self, url, _project = False):
         '''Load the raw SOR file from provided url into the internal data format'''
-        status, d_meta, l_raw_trace = sorparse(url)
-        d_meta["url"] = url
+        if not _project:
+            status, d_meta, l_raw_trace = sorparse(url)            
+            d_meta["url"] = url
+        else:
+            d_meta = _project["meta"]
+            l_raw_trace = _project["raw_trace"]
+        self.files[url] = {"meta":d_meta, "raw_trace":l_raw_trace}
         q_trace = deque(l_raw_trace)
         l_distance = list()
         l_level = list()
@@ -176,8 +181,12 @@ class MainWindow(QtWidgets.QMainWindow):
             options |= QtWidgets.QFileDialog.DontUseNativeDialog
             fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Open project", "","OpenOTDR Project Files(*.opro);;All Files (*)", options=options)
             if fileName:
-                print(fileName)
-                # TODO Open project
+                with open(fileName, "r") as f:
+                    content = json.load(f)
+                self.meta = content["meta"]
+                for uri, data in content["files"].items():
+                    self._load_file(uri, _project=data)
+        self.recalculate_events()
             
     def save_project(self):
         if self.busy.locked():
@@ -185,10 +194,14 @@ class MainWindow(QtWidgets.QMainWindow):
         with self.busy:
             options = QtWidgets.QFileDialog.Options()
             options |= QtWidgets.QFileDialog.DontUseNativeDialog
-            fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self,"Save project", "","OpenOTDR Project Files(*.opro);;All Files (*)", options=options)
-            if fileName:
-                print(fileName)
-                # TODO Save project
+            uri, _ = QtWidgets.QFileDialog.getSaveFileName(self,"Save project", "","OpenOTDR Project Files(*.opro);;All Files (*)", options=options)
+            if uri:
+                path, extension = os.path.splitext(uri)
+                if not extension:
+                    uri += ".opro"
+                content = {"meta":self.meta, "files":self.files}
+                with open(uri, "w") as f:
+                    json.dump(content, f)
     
     def print_pdf(self):
         if self.busy.locked():
