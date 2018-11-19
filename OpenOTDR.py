@@ -172,11 +172,11 @@ class MainWindow(QtWidgets.QMainWindow):
             l_raw_trace = _project["raw_trace"]
         self.files[url] = {"meta": d_meta, "raw_trace": l_raw_trace}
         a_trace = self.__preprocess_data(d_meta, l_raw_trace)
+        d_data= prepare_data({"meta":d_meta, "trace":a_trace}, self.window_len)
         filename = os.path.basename(url)
         item = QtGui.QStandardItem(filename)
-        item.data = {"meta": d_meta, "trace": a_trace}
+        item.data = d_data
         self.project_model.appendRow(item)
-        self._draw()
 
     def _draw(self):
         '''(re)draw the plot with the latest data'''
@@ -215,6 +215,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.meta = content["meta"]
                 for uri, data in content["files"].items():
                     self._load_file(uri, _project=data)
+                for index in range(self.project_model.rowCount()):
+                    raw_data = self.project_model.item(index).data
+                    self.raw_traces.append(raw_data)
+                self._draw()
         self.recalculate_events()
 
     def save_project(self):
@@ -261,6 +265,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 return
             for filename in files:
                 self._load_file(filename)
+            for index in range(self.project_model.rowCount()):
+                raw_data = self.project_model.item(index).data
+                self.raw_traces.append(raw_data)
 
     def remove_trace(self):
         '''Remove a trace'''
@@ -276,7 +283,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self._draw()
     
     @staticmethod
-    def _filter_features(raw_features):
+    def _filter_events(raw_features):
         '''Filter the detected features of each trace to make a single set with no duplicates or ghosts'''
         d_events = {}
         for trace_features in raw_features:
@@ -358,7 +365,7 @@ class MainWindow(QtWidgets.QMainWindow):
             raw_traces = l_traces
             if not raw_features:
                 return
-            d_events = self._filter_features(raw_features)
+            d_events = self._filter_events(raw_features)
             self._update_events_table(d_events, raw_traces)
 
 
