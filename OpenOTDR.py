@@ -304,15 +304,14 @@ class MainWindow(QtWidgets.QMainWindow):
     def __calculate_loss_and_dispersion(self, raw_traces, meta_data):
         '''Calculate the loss and dispersion of an event'''
         start_values = []
+        end_values = []
         for trace in raw_traces:
             for i in meta_data["indexes"]:
                 start_index = max(0, i-self.window_len)
                 start_values.append(trace["trace"][0][start_index])
-        end_values = []
-        for trace in raw_traces:
-            for i in meta_data["indexes"]:
                 end_index = min(len(trace["trace"][0])-1, i+self.window_len)
                 end_values.append(trace["trace"][0][end_index])
+                self.canvas.figure.get_axes()[0].axvspan(trace["trace"][1][start_index], trace["trace"][1][end_index], color='yellow', alpha=0.5)
         average_start = sum(start_values)/len(start_values)
         average_end = sum(end_values)/len(end_values)
         loss = average_start - average_end
