@@ -1,5 +1,5 @@
-scipy==1.1.0
-matplotlib==3.0.0
-numpy==1.14.5
-PyQt5==5.11.3
-pyOTDR==1.0.0c1
+scipy==1.10.1
+matplotlib==3.6.3
+pyotdr==1.0.0
+numpy==1.24.2
+PyQt5==*
