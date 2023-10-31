@@ -12,7 +12,7 @@ from PyQt5 import QtCore
 import numpy as np
 from scipy.ndimage import zoom
 from scipy.signal import find_peaks
-from pyOTDR import sorparse
+from pyotdr import sorparse
 from matplotlib.figure import Figure
 from matplotlib import cm
 from matplotlib import colors
@@ -317,7 +317,12 @@ class MainWindow(QtWidgets.QMainWindow):
         loss = average_start - average_end
         difference_start = max(start_values) - min(start_values)
         difference_end = max(end_values) - min(end_values)
-        dispersion_factor = round(max(difference_end/difference_start, difference_start/difference_end))
+        #print("difference_end=", difference_end)
+        #print("difference_start=", difference_start)
+        if difference_start == 0 or difference_end == 0:
+            dispersion_factor = 0
+        else:
+            dispersion_factor = round(max(difference_end/difference_start, difference_start/difference_end))
         return loss, dispersion_factor
 
     def _update_events_table(self, d_events, raw_traces):
