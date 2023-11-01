@@ -52,7 +52,13 @@ def prepare_data(d_data, window_len):
     # Scale to ensure resolution per distance unit is equal.
     a_trace = zoom(a_smooth_trace, zoom=(1.0, d_data["meta"]["FxdParams"]["resolution"]), order=1)
     # Offsetting to make all launch levels the same
-    n_offset = -a_trace[0][325]
+#    print("a_trace[0] =", a_trace[0])
+#    print("len(a_trace[0]) =", len(a_trace[0]))
+    try:
+        n_offset = -a_trace[0][325]
+    except:
+        n_offset = 0.0
+#    print("n_offset=", n_offset)
     a_trace[0] = a_trace[0] + n_offset
     return {"meta": d_data["meta"], "trace": a_trace}
 
@@ -122,15 +128,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.user_interface.setupUi(self)
         self.project_model = QtGui.QStandardItemModel()
         self.user_interface.treeView.setModel(self.project_model)
+        # trace event processing model
         self.events_model = QtGui.QStandardItemModel()
+        #
         self.events_proxy_model = NaturalSortFilterProxyModel()
         self.events_proxy_model.setSourceModel(self.events_model)
         self.events_proxy_model.sort(1, QtCore.Qt.AscendingOrder)
+        #
         self.user_interface.eventTableView.setModel(self.events_proxy_model)
+        #
         self.user_interface.openProject.clicked.connect(self.open_project)
         self.user_interface.saveProject.clicked.connect(self.save_project)
         self.user_interface.printReport.clicked.connect(self.print_pdf)
-        self.user_interface.printReport.setDisabled(True)
+        self.user_interface.printReport.setDisabled(False)
         self.user_interface.addTrace.clicked.connect(self.add_trace)
         self.user_interface.removeTrace.clicked.connect(self.remove_trace)
         self.user_interface.recalculateEvents.clicked.connect(self.recalculate_events)
@@ -153,6 +163,7 @@ class MainWindow(QtWidgets.QMainWindow):
         l_level = list()
         raw_row = q_trace.popleft()
         while q_trace:
+#            print("raw_row=", raw_row)
             raw_distance, raw_level = raw_row.replace("\n", "").split("\t")
             f_distance = float(raw_distance)
             f_level = float(raw_level)
@@ -171,6 +182,8 @@ class MainWindow(QtWidgets.QMainWindow):
             d_meta = _project["meta"]
             l_raw_trace = _project["raw_trace"]
         self.files[url] = {"meta": d_meta, "raw_trace": l_raw_trace}
+#        print("d_meta=", json.dumps(d_meta, sort_keys=True, indent=4))
+#        print("l_raw_trace=", json.dumps(l_raw_trace, sort_keys=True, indent=4))
         a_trace = self.__preprocess_data(d_meta, l_raw_trace)
         d_data= prepare_data({"meta":d_meta, "trace":a_trace}, self.window_len)
         filename = os.path.basename(url)
@@ -185,6 +198,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.raw_traces:
             for d_final_data in self.raw_traces:
                 wavelength = d_final_data["meta"]["GenParams"]["wavelength"]
+#                print("wavelength=", wavelength)
                 plt.plot(d_final_data["trace"][1],
                          d_final_data["trace"][0],
                          label=wavelength,
@@ -215,9 +229,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.meta = content["meta"]
                 for uri, data in content["files"].items():
                     self._load_file(uri, _project=data)
+                    self._draw()
                 for index in range(self.project_model.rowCount()):
                     raw_data = self.project_model.item(index).data
                     self.raw_traces.append(raw_data)
+                    self._draw()
                 self._draw()
         self.recalculate_events()
 
@@ -268,6 +284,7 @@ class MainWindow(QtWidgets.QMainWindow):
             for index in range(self.project_model.rowCount()):
                 raw_data = self.project_model.item(index).data
                 self.raw_traces.append(raw_data)
+            self._draw()
 
     def remove_trace(self):
         '''Remove a trace'''
@@ -332,6 +349,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                                      'Distance (km)',
                                                      'Loss (dB)',
                                                      'Dispersion factor'])
+        #
         for position, meta_data in d_events.items():
             current_row = self.events_model.rowCount()
             self.events_model.insertRow(current_row)
