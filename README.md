@@ -19,9 +19,13 @@ We will also be implementing features that have been on the roadmap for years, f
 
 ### Core features
 
-- Load SOR trace data
-- Load GIS map path data
-- Load Fibre scope pictures
-- Map SOR trace to GIS path
-- Label features in trace data
-- Create and Manage tests in Projects
+[x] Create and Manage tests in Projects
+[x] Load SOR trace data
+[] Label features in trace data
+[] Quick view
+[] Edit Metadata
+[] Export/Import Projects
+[] Export SOR & SOD Files
+[] Load GIS map path data
+[] Load Fibre scope pictures
+[] Map SOR trace to GIS path
