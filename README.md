@@ -24,5 +24,4 @@ We will also be implementing features that have been on the roadmap for years, f
 - Load Fibre scope pictures
 - Map SOR trace to GIS path
 - Label features in trace data
-- Create report PDFs
 - Create and Manage tests in Projects
