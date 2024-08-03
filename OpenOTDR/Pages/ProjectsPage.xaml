@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:OpenOTDR.Models"
+             xmlns:local="clr-namespace:OpenOTDR.Pages"
+             xmlns:resources="using:OpenOTDR.Resources"
+             x:Class="OpenOTDR.Pages.ProjectsPage"
+             ControlTemplate="{StaticResource GeneralHeader}"
+             >
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="existingRecord">
+            <Border
+                HeightRequest="180"
+                WidthRequest="280"
+                x:DataType="models:Project"
+                Style="{StaticResource ClickableCard}">
+                <Grid
+                    Margin="15"
+                    ColumnDefinitions="*,auto"
+                    RowDefinitions="*,auto">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="1"
+                                              Tapped="OnTapped" />
+                    </Grid.GestureRecognizers>
+                    <Grid
+                        Grid.Row="1"
+                        Grid.Column="1">
+                        <Grid.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="1"
+                                              Tapped="OnDeleted" />
+                        </Grid.GestureRecognizers>
+                        <Border Style="{StaticResource DeleteButton}">
+                            <Image Scale="0.5" Source="icon_delete.png"/>
+                        </Border>
+                    </Grid>
+                    <StackLayout
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        HorizontalOptions="Start"
+                        Spacing="0"
+                        VerticalOptions="Start">
+                        <Label Text="{Binding Name}" Style="{StaticResource Headline}" />
+                        <Label Style="{StaticResource SubHeadline}">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Binding Customer.Name}" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        <Label>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Binding A.Address}" />
+                                    <Span Text=" => " />
+                                    <Span Text="{Binding B.Address}" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </StackLayout>
+                </Grid>
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="newRecord">
+            <Border
+                HeightRequest="180"
+                WidthRequest="280"
+                x:DataType="models:Project"
+                Style="{StaticResource ClickableCard}">
+                <Border.Shadow>
+                    <Shadow Brush="Black"
+                            Offset="0,5"
+                            Radius="5"
+                            Opacity="0.1" />
+                </Border.Shadow>
+                <Border.StrokeShape>
+                    <RoundRectangle
+                        CornerRadius="2" />
+                </Border.StrokeShape>
+                <StackLayout
+                    HorizontalOptions="Start"
+                    Spacing="0"
+                    VerticalOptions="Start">
+                    <Grid
+                        Margin="10"
+                        ColumnDefinitions="*"
+                        RowDefinitions="*">
+                        <resources:BorderlessEntry Placeholder="New Project" Style="{StaticResource EditableHeadline}" Completed="OnNewEnter" />
+                    </Grid>
+                </StackLayout>
+            </Border>
+        </DataTemplate>
+        <local:ProjectDataTemplateSelector x:Key="projectDataTemplateSelector"
+                                          ExistingRecord="{StaticResource existingRecord}"
+                                          NewRecord="{StaticResource newRecord}" />
+    </ContentPage.Resources>
+    <Grid RowDefinitions="60,*">
+        <VerticalStackLayout
+            Grid.Row="0" >
+            <HorizontalStackLayout 
+                Margin="10,17.5"
+                Spacing="5">
+                <Label  Text="Projects" FontFamily="Segoe UI" FontSize="14" FontAttributes="Bold"/>
+            </HorizontalStackLayout>
+            <Line Stroke="#E0E0E0" X2="{Binding Width, Source={RelativeSource Self}}" HorizontalOptions="Fill" StrokeThickness="1" />
+        </VerticalStackLayout>
+        <FlexLayout
+        Grid.Row="1"
+            x:Name="FlexProjects"
+            Wrap="Wrap"
+            JustifyContent="Start"
+            Margin="10,20"
+            BindableLayout.ItemTemplateSelector="{StaticResource projectDataTemplateSelector}"
+            >
+        </FlexLayout>
+    </Grid>
+
+</ContentPage>

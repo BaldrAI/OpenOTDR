@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
+             xmlns:models="clr-namespace:OpenOTDR.Models"
+             xmlns:viewmodels="clr-namespace:OpenOTDR.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
+             x:Class="OpenOTDR.Pages.ProjectTracePage"
+             x:DataType="models:Project"
+             ControlTemplate="{StaticResource GeneralHeader}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:MathExpressionConverter x:Key="MathExpressionConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid RowDefinitions="60,*">
+        <VerticalStackLayout
+            Grid.Row="0" >
+            <HorizontalStackLayout 
+                Margin="10,5"
+                Spacing="5">
+                <Grid>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="1"
+                                              Tapped="GoToProjects" />
+                    </Grid.GestureRecognizers>
+                    <Label  Text="Projects" FontFamily="Segoe UI" FontSize="16" VerticalOptions="Center" Padding="0,0,0,1"/>
+                </Grid>
+                <Label  Text=">" FontFamily="Segoe UI" FontSize="16" VerticalOptions="Center" Padding="0,0,0,1"/>
+                <Label  Text="{Binding Name}" FontSize="16" VerticalOptions="Center" Padding="0,0,0,1" />
+                <Label  Text=">" FontFamily="Segoe UI" FontSize="16" VerticalOptions="Center" Padding="0,0,0,1"/>
+                <Picker x:Name="picker" SelectedIndexChanged="OnPickerSelectedIndexChanged">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Overview</x:String>
+                            <x:String>Trace</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </HorizontalStackLayout>
+            <Line Stroke="#E0E0E0" X2="{Binding Width, Source={RelativeSource Self}}" HorizontalOptions="Fill" StrokeThickness="1" />
+        </VerticalStackLayout>
+        <ScrollView
+            MaximumHeightRequest="{Binding Parent.Parent.Height, Source={RelativeSource Self}, Converter={StaticResource MathExpressionConverter}, ConverterParameter='x-65'}"
+            Grid.Row="1">
+            <Grid
+                Margin="10,0"
+                ColumnDefinitions="700*, 300*, 350*"
+                RowDefinitions="500*, 400*"
+                MinimumHeightRequest="830">
+                <Border
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Style="{StaticResource Card}"
+                    MinimumWidthRequest="500"
+                    MinimumHeightRequest="500"
+                    >
+                    <lvc:CartesianChart
+                        x:Name ="Chart"
+                        x:DataType="viewmodels:ChartData"
+                        ZoomMode="X"
+                        Margin="20"
+                        Series="{Binding Series}"
+                        XAxes="{Binding XAxes}"
+                        YAxes="{Binding YAxes}"
+                        TooltipPosition="Auto"
+                        EasingFunction="{x:Null}">
+                    </lvc:CartesianChart>
+                </Border>
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Style="{StaticResource Card}"
+                    >
+                    <dg:DataGrid 
+                        MinimumWidthRequest="500"
+                        x:Name="DataGrid" SelectionMode="None"
+                        SortingEnabled="True" RowHeight="50" HeaderHeight="50"
+                        BorderColor="#E0E0E0" BorderThickness="0,1,0,0"
+                        HeaderBackground="White" HeaderBordersVisible="False" 
+                        PaginationEnabled="True" PageSize="9" VerticalOptions="Fill"
+                        HeaderLabelStyle="{StaticResource TableHeaderLabel}"
+                        >
+                        <dg:DataGrid.Columns>
+                            <dg:DataGridColumn Title="Event Number" PropertyName="EventNumber" Width="0.5*" SortingEnabled="True" HorizontalContentAlignment="Start"/>
+                            <dg:DataGridColumn Title="Type" PropertyName="TypeName" Width="0.5*" SortingEnabled="True" HorizontalContentAlignment="Start"/>
+                            <dg:DataGridColumn Title="Distance(m)" PropertyName="DistanceMeters" Width=".3*" SortingEnabled="True" HorizontalContentAlignment="Start" StringFormat="{}{0:F2}"/>
+                            <dg:DataGridColumn Title="Loss (dB)" PropertyName="Loss" Width="0.5*" SortingEnabled="True" HorizontalContentAlignment="Start" StringFormat="{}{0:F2}"/>
+                            <dg:DataGridColumn Title="Reflection (dB)" PropertyName="Reflection" Width="0.5*" SortingEnabled="True" HorizontalContentAlignment="Start" StringFormat="{}{0:F2}"/>
+                            <dg:DataGridColumn Title="Reflection Type" PropertyName="ReflectionTypeName" Width="0.4*" SortingEnabled="True" HorizontalContentAlignment="Start"/>
+                            <dg:DataGridColumn Title="Technique" PropertyName="LossMeasurementTechniqueName" Width="0.6*" SortingEnabled="True" HorizontalContentAlignment="Start"/>
+                        </dg:DataGrid.Columns>
+                    </dg:DataGrid>
+                </Border>
+                <Border
+                            Grid.Column="2"
+                            Grid.RowSpan="2"
+                            Style="{StaticResource Card}">
+                    <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                VerticalOptions="Start"
+                                >
+                        <Label Text="Metadata" Style="{StaticResource CardHeadline}" />
+                        <VerticalStackLayout
+                            HorizontalOptions="Start"
+                            Spacing="2"
+                            VerticalOptions="Start"
+                            Margin="0,5">
+                            <Label Text="Files" Style="{StaticResource SubHeadline}" />
+                            <Label x:Name="MetaFiles"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                            HorizontalOptions="Start"
+                            Spacing="2"
+                            VerticalOptions="Start"
+                            Margin="0,5">
+                            <Label Text="Operator" Style="{StaticResource SubHeadline}" />
+                            <Label x:Name="MetaOperator"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                            HorizontalOptions="Start"
+                            Spacing="2"
+                            VerticalOptions="Start"
+                            Margin="0,5">
+                            <Label Text="Fiber Type" Style="{StaticResource SubHeadline}" />
+                            <Label x:Name="MetaFiberType"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                            HorizontalOptions="Start"
+                            Spacing="2"
+                            VerticalOptions="Start"
+                            Margin="0,5">
+                            <Label Text="Length" Style="{StaticResource SubHeadline}" />
+                            <Label x:Name="MetaLength"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                            HorizontalOptions="Start"
+                            Spacing="2"
+                            VerticalOptions="Start"
+                            Margin="0,5">
+                            <Label Text="End-to-End Loss" Style="{StaticResource SubHeadline}" />
+                            <Label x:Name="MetaE2ELoss"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                            HorizontalOptions="Start"
+                            Spacing="2"
+                            VerticalOptions="Start"
+                            Margin="0,5">
+                            <Label Text="Circuit ID" Style="{StaticResource SubHeadline}" />
+                            <Label x:Name="MetaCircuitId"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                            HorizontalOptions="Start"
+                            Spacing="2"
+                            VerticalOptions="Start"
+                            Margin="0,5">
+                            <Label Text="Location A" Style="{StaticResource SubHeadline}" />
+                            <Label x:Name="MetaLocA"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                            HorizontalOptions="Start"
+                            Spacing="2"
+                            VerticalOptions="Start"
+                            Margin="0,5">
+                            <Label Text="Location B" Style="{StaticResource SubHeadline}" />
+                            <Label x:Name="MetaLocB"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                            HorizontalOptions="Start"
+                            Spacing="2"
+                            VerticalOptions="Start"
+                            Margin="0,5">
+                            <Label Text="Wavelengths" Style="{StaticResource SubHeadline}" />
+                            <Label x:Name="MetaWavelength"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                            HorizontalOptions="Start"
+                            Spacing="2"
+                            VerticalOptions="Start"
+                            Margin="0,5">
+                            <Label Text="Pulse Width" Style="{StaticResource SubHeadline}" />
+                            <Label x:Name="MetaPulseWidth"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                            HorizontalOptions="Start"
+                            Spacing="2"
+                            VerticalOptions="Start"
+                            Margin="0,5">
+                            <Label Text="Range" Style="{StaticResource SubHeadline}" />
+                            <Label x:Name="MetaRange"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                            HorizontalOptions="Start"
+                            Spacing="2"
+                            VerticalOptions="Start"
+                            Margin="0,5">
+                            <Label Text="Resolution" Style="{StaticResource SubHeadline}" />
+                            <Label x:Name="MetaResolution" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                            HorizontalOptions="Start"
+                            Spacing="2"
+                            VerticalOptions="Start"
+                            Margin="0,5">
+                            <Label Text="Model" Style="{StaticResource SubHeadline}" />
+                            <Label x:Name="MetaModel" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                            HorizontalOptions="Start"
+                            Spacing="2"
+                            VerticalOptions="Start"
+                            Margin="0,5">
+                            <Label Text="IndexOfRefraction" Style="{StaticResource SubHeadline}" />
+                            <Label x:Name="MetaIOR" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+        </ScrollView>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,23 @@
+﻿<maui:MauiWinUIApplication
+    x:Class="OpenOTDR.WinUI.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:maui="using:Microsoft.Maui"
+    xmlns:local="using:OpenOTDR.WinUI">
+    <maui:MauiWinUIApplication.Resources>
+
+        <DataTemplate x:Key="MauiAppTitleBarTemplate">
+
+            <Grid x:Name="AppTitleBar">
+                <Border
+                    Canvas.ZIndex="1"
+                    VerticalAlignment="Stretch"
+                    Background="#EBEBEB"
+                    />
+            </Grid>
+        </DataTemplate>
+        <!-- <Thickness x:Key="TextControlBorderThemeThickness">0</Thickness> -->
+        <!-- <Thickness x:Key="TextControlBorderThemeThicknessFocused">1</Thickness> -->
+    </maui:MauiWinUIApplication.Resources>
+
+</maui:MauiWinUIApplication>

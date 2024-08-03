@@ -1,0 +1,336 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:resources="using:OpenOTDR.Resources"
+             xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
+             xmlns:models="clr-namespace:OpenOTDR.Models"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="OpenOTDR.Pages.ProjectOverviewPage"
+             x:DataType="models:Project"
+             ControlTemplate="{StaticResource GeneralHeader}"
+             >
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:MathExpressionConverter x:Key="MathExpressionConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid 
+            MinimumHeightRequest="1060"
+            RowDefinitions="60,*">
+        <VerticalStackLayout
+                Grid.Row="0" >
+            <HorizontalStackLayout 
+                    Margin="10,5"
+                    Spacing="5">
+                <Grid>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                  Tapped="GoToProjects" />
+                    </Grid.GestureRecognizers>
+                    <Label  Text="Projects" FontFamily="Segoe UI" FontSize="16" VerticalOptions="Center" Padding="0,0,0,1"/>
+                </Grid>
+                <Label  Text=">" FontFamily="Segoe UI" FontSize="16" VerticalOptions="Center" Padding="0,0,0,1"/>
+                <resources:BorderlessEntry Placeholder="{Binding Name}" Completed="OnChangeName" Style="{StaticResource EditableNav}"/>
+                <Label  Text=">" FontFamily="Segoe UI" FontSize="16" VerticalOptions="Center" Padding="0,0,0,1"/>
+                <Picker x:Name="picker" SelectedIndexChanged="OnPickerSelectedIndexChanged">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Overview</x:String>
+                            <x:String>Trace</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </HorizontalStackLayout>
+            <Line Stroke="#E0E0E0" X2="{Binding Width, Source={RelativeSource Self}}" HorizontalOptions="Fill" StrokeThickness="1" />
+        </VerticalStackLayout>
+        <ScrollView Grid.Row="1"
+                    MaximumHeightRequest="{Binding Parent.Parent.Height, Source={RelativeSource Self}, Converter={StaticResource MathExpressionConverter}, ConverterParameter='x-65'}"
+                        VerticalOptions="Start">
+            <Grid
+                            Margin="10,0"
+                            ColumnDefinitions="700*, 300*, 350*"
+                            RowDefinitions="530*, 530*"
+                            MinimumHeightRequest="1060"
+                            x:Name="MainGrid">
+                <Border
+                                Grid.Column="0"
+                                Style="{StaticResource Card}"
+                                MinimumWidthRequest="500">
+                    <VerticalStackLayout
+                                    HorizontalOptions="Start"
+                                    Spacing="5"
+                                    VerticalOptions="Start">
+                        <Label Text="This will contain a map" Style="{StaticResource CardHeadline}" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Style="{StaticResource Card}">
+                    <ScrollView 
+                            VerticalOptions="Fill">
+                        <VerticalStackLayout
+                                        HorizontalOptions="Start"
+                                        Spacing="5"
+                                        VerticalOptions="Start">
+                            <Grid ColumnDefinitions="*,110">
+                                <Label Text="Files" Style="{StaticResource CardHeadline}" />
+                                <Button Clicked="OnFileAdd" Grid.Column="1" Text="Add File" WidthRequest="105" HorizontalOptions="Start">
+                                    <Button.Shadow>
+                                        <Shadow Brush="Black"
+                                                    Offset="2,2"
+                                                    Radius="2"
+                                                    Opacity="0.3" />
+                                    </Button.Shadow>
+                                </Button>
+                            </Grid>
+                            <dg:DataGrid 
+                                    WidthRequest="1200" MinimumHeightRequest="420"
+                                    ItemsSource="{Binding Files}" SelectionMode="None"
+                                    SortingEnabled="True" RowHeight="50" HeaderHeight="50"
+                                    BorderColor="#E0E0E0" BorderThickness="0,1,0,0"
+                                    HeaderBackground="White" HeaderBordersVisible="False" 
+                                    PaginationEnabled="True" PageSize="6" VerticalOptions="Fill" 
+                                    HeaderLabelStyle="{StaticResource TableHeaderLabel}"
+                                    >
+                                <dg:DataGrid.Columns>
+                                    <dg:DataGridColumn Title="Type" PropertyName="FileType" Width="0.3*" SortingEnabled="True" HorizontalContentAlignment="Start"/>
+                                    <dg:DataGridColumn Title="Filename" PropertyName="Filename" Width="5*" SortingEnabled="True" HorizontalContentAlignment="Start"/>
+                                    <dg:DataGridColumn Title="Date Added" PropertyName="DateAddedStr" Width="0.75*" SortingEnabled="True" HorizontalContentAlignment="Start"/>
+                                    <dg:DataGridColumn Title="Wavelength (nm)" PropertyName="Wavelength" Width="0.5*" SortingEnabled="True" HorizontalContentAlignment="Start"/>
+                                    <dg:DataGridColumn Title="Options" Width="0.5*">
+                                        <dg:DataGridColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ContentView>
+                                                    <Grid>
+                                                        <Grid.GestureRecognizers>
+                                                            <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                                                      Tapped="OnFileDeleted" />
+                                                        </Grid.GestureRecognizers>
+                                                        <Image Scale="0.5" Source="icon_delete.png"/>
+                                                    </Grid>
+                                                </ContentView>
+                                            </DataTemplate>
+                                        </dg:DataGridColumn.CellTemplate>
+                                    </dg:DataGridColumn>
+                                </dg:DataGrid.Columns>
+                            </dg:DataGrid>
+                        </VerticalStackLayout>
+                    </ScrollView>
+                </Border>
+                <Border
+                                Grid.Column="1"
+                                Style="{StaticResource Card}">
+                    <VerticalStackLayout
+                                    HorizontalOptions="Start"
+                                    Spacing="0"
+                                    VerticalOptions="Start"
+                                    x:DataType="models:Customer"
+                                    BindingContext="{Binding Customer}">
+                        <Label Text="Customer" Style="{StaticResource CardHeadline}" />
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="Company Name" Style="{StaticResource SubHeadline}" />
+                            <resources:BorderlessEntry Text="{Binding Name}" Placeholder="Company name"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="Office Address" Style="{StaticResource SubHeadline}" />
+                            <resources:BorderlessEntry Text="{Binding Address}" Placeholder="Office address"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="Technical Contact" Style="{StaticResource SubHeadline}" />
+                            <HorizontalStackLayout
+                                            HorizontalOptions="Start"
+                                            Spacing="5"
+                                            VerticalOptions="Start">
+                                <VerticalStackLayout
+                                                HorizontalOptions="Start"
+                                                Spacing="5"
+                                                VerticalOptions="Start"
+                                                BindingContext="{Binding TechnicalContact}"
+                                                x:DataType="models:Contact">
+                                    <resources:BorderlessEntry Text="{Binding DisplayName}" Placeholder="Full name"/>
+                                    <resources:BorderlessEntry Text="{Binding Email}" Placeholder="Email address"/>
+                                    <resources:BorderlessEntry Text="{Binding Phone}" Placeholder="Phone Number" />
+                                </VerticalStackLayout>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="Billing Contact" Style="{StaticResource SubHeadline}" />
+                            <HorizontalStackLayout
+                                            HorizontalOptions="Start"
+                                            Spacing="5"
+                                            VerticalOptions="Start">
+                                <VerticalStackLayout
+                                                HorizontalOptions="Start"
+                                                Spacing="5"
+                                                VerticalOptions="Start"
+                                                BindingContext="{Binding BillingContact}"
+                                                x:DataType="models:Contact">
+                                    <resources:BorderlessEntry Text="{Binding DisplayName}" Placeholder="Full name"/>
+                                    <resources:BorderlessEntry Text="{Binding Email}" Placeholder="Email address"/>
+                                    <resources:BorderlessEntry Text="{Binding Phone}" Placeholder="Phone Number" />
+                                </VerticalStackLayout>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+                <Border
+                                Grid.Column="2"
+                                Style="{StaticResource Card}">
+                    <VerticalStackLayout
+                                    HorizontalOptions="Start"
+                                    Spacing="0"
+                                    VerticalOptions="Start"
+                                    BindingContext="{Binding A}"
+                                    x:DataType="models:Location">
+                        <Label Text="Location A" Style="{StaticResource CardHeadline}" />
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="Street Address" Style="{StaticResource SubHeadline}" />
+                            <resources:BorderlessEntry Text="{Binding Address}" Placeholder="Street address"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="GPS Latitude" Style="{StaticResource SubHeadline}" />
+                            <resources:BorderlessEntry Text="{Binding Latitude}" Placeholder="Latitude"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="GPS Longitude" Style="{StaticResource SubHeadline}" />
+                            <resources:BorderlessEntry Text="{Binding Longitude}" Placeholder="Longitude" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="Cable In" Style="{StaticResource SubHeadline}" />
+                            <resources:BorderlessEntry Text="{Binding CableIn}" Placeholder="Inbound Cable ID" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="Fiber In" Style="{StaticResource SubHeadline}" />
+                            <resources:BorderlessEntry Text="{Binding FibreIn}" Placeholder="Inbound Fiber ID" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="Cable Out" Style="{StaticResource SubHeadline}" />
+                            <resources:BorderlessEntry Text="{Binding CableOut}" Placeholder="Outbound Cable ID" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="Fiber Out" Style="{StaticResource SubHeadline}" />
+                            <resources:BorderlessEntry Text="{Binding FibreOut}" Placeholder="Outbound Fiber ID" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+                <Border
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Style="{StaticResource Card}"
+                                MinimumWidthRequest="500">
+                    <VerticalStackLayout
+                                    HorizontalOptions="Start"
+                                    Spacing="0"
+                                    VerticalOptions="Start"
+                                    BindingContext="{Binding B}"
+                                    x:DataType="models:Location">
+                        <Label Text="Location B" Style="{StaticResource CardHeadline}" />
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="Street Address" Style="{StaticResource SubHeadline}" />
+                            <resources:BorderlessEntry Text="{Binding Address}" Placeholder="Street address"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="GPS Latitude" Style="{StaticResource SubHeadline}" />
+                            <resources:BorderlessEntry Text="{Binding Latitude}" Placeholder="Latitude"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="GPS Longitude" Style="{StaticResource SubHeadline}" />
+                            <resources:BorderlessEntry Text="{Binding Longitude}" Placeholder="Longitude" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="Cable In" Style="{StaticResource SubHeadline}" />
+                            <resources:BorderlessEntry Text="{Binding CableIn}" Placeholder="Inbound Cable ID" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="Fiber In" Style="{StaticResource SubHeadline}" />
+                            <resources:BorderlessEntry Text="{Binding FibreIn}" Placeholder="Inbound Fiber ID" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="Cable Out" Style="{StaticResource SubHeadline}" />
+                            <resources:BorderlessEntry Text="{Binding CableOut}" Placeholder="Outbound Cable ID" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                                HorizontalOptions="Start"
+                                Spacing="2"
+                                VerticalOptions="Start"
+                                Margin="0,5">
+                            <Label Text="Fiber Out" Style="{StaticResource SubHeadline}" />
+                            <resources:BorderlessEntry Text="{Binding FibreOut}" Placeholder="Outbound Fiber ID" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+        </ScrollView>
+    </Grid>
+</ContentPage>
