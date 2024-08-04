@@ -71,4 +71,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: MSIX Package
-        path: ${{ env.CS_Project_Directory }}\AppPackages\
+        path: ${{ env.CS_Project_Directory }}\OpenOTDR\AppPackages\
