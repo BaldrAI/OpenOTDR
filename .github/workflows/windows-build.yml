@@ -70,11 +70,7 @@ jobs:
 
     # Create the app package by building and packaging the Windows Application Packaging project
     - name: Create the app package
-      run: msbuild $env:CS_Project_Path -p:Configuration=Release -f:net8.0-windows10.0.22621.0 /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=false /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle
-      env:
-        Appx_Bundle: Always
-        Appx_Bundle_Platforms: x86|x64
-        Appx_Package_Build_Mode: StoreUpload
+      run: dotnet publish $env:CS_Project_Path -c Release -f:net8.0-windows10.0.22621.0 /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=false
 
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload build artifacts
