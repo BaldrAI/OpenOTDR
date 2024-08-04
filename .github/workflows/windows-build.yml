@@ -71,4 +71,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: MSIX Package
-        path: src/OpenOTDR/bin/Release/net8.0-windows*/**/OpenOTDR*.msix
+        path: src/OpenOTDR/bin/Release/net8.0-windows*/
