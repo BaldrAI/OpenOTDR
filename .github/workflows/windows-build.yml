@@ -1,23 +1,3 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# This workflow will build, test, sign and package a WPF or Windows Forms desktop application
-# built on .NET Core.
-# To learn how to migrate your existing application to .NET Core,
-# refer to https://docs.microsoft.com/en-us/dotnet/desktop-wpf/migration/convert-project-from-net-framework
-#
-# To configure this workflow:
-#
-# 1. Configure environment variables
-# GitHub sets default environment variables for every workflow run.
-# Replace the variables relative to your project in the "env" section below.
-#
-# For more information on GitHub Actions, refer to https://github.com/features/actions
-# For a complete CI/CD sample to get started with GitHub Action workflows for Desktop Applications,
-# refer to https://github.com/microsoft/github-actions-for-desktop-apps
-
 name: Build Windows
 
 on:
@@ -30,14 +10,12 @@ jobs:
 
   build:
 
-    runs-on: windows-latest  # For a list of available runner types, refer to
-                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    runs-on: windows-latest
 
     env:
-      Solution_Name: OpenOTDR                         # Replace with your solution name, i.e. MyWpfApp.sln.
-      # Test_Project_Path: your-test-project-path                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
-      CS_Project_Directory: OpenOTDR    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
-      CS_Project_Path: OpenOTDR\OpenOTDR.csproj                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
+      Solution_Name: OpenOTDR
+      CS_Project_Directory: OpenOTDR
+      CS_Project_Path: OpenOTDR\OpenOTDR.csproj 
 
     steps:
     - name: Checkout
@@ -45,7 +23,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    # Install the .NET Core workload
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
@@ -59,19 +36,14 @@ jobs:
     - name: Install MAUI workload
       run: dotnet workload install maui
 
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
     - name: Restore the application
       run: dotnet restore $env:CS_Project_Path
 
-    # - name: Build the application
-    #   run: msbuild $env:CS_Project_Path -r -p:Configuration=Release -p:RestorePackages=false -p:TargetFramework=net8.0-windows10.0.22621.0 /p:GenerateAppxPackageOnBuild=true /p:OutputPath=${{ env.CS_Project_Directory }}\AppPackages
-
     - name: Build the application
-      run: dotnet publish -f net8.0-windows10.0.22621.0 -c Release -p:WindowsPackageType=None -o ${{ env.CS_Project_Directory }}\AppPackages
-
-    # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
+      run: dotnet publish -f net8.0-windows10.0.22621.0 -c Release -p:WindowsPackageType=None -o ${{ env.CS_Project_Directory }}\AppPackages --self-contained
+      
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: MSIX Package
-        path: ${{ env.CS_Project_Directory }}
+        name: OpenOTDR
+        path: ${{ env.CS_Project_Directory }}\AppPackages
