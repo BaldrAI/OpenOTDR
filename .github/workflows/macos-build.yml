@@ -11,7 +11,7 @@ jobs:
     env:
       Solution_Name: OpenOTDR
       CS_Project_Directory: OpenOTDR
-      CS_Project_Path: OpenOTDR/OpenOTDR.csproj
+      CS_Project_Path: OpenOTDR/OpenOTDR-MacIOS.csproj
 
     steps:
     - name: Checkout
