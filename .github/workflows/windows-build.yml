@@ -67,7 +67,7 @@ jobs:
     #   run: msbuild $env:CS_Project_Path -r -p:Configuration=Release -p:RestorePackages=false -p:TargetFramework=net8.0-windows10.0.22621.0 /p:GenerateAppxPackageOnBuild=true /p:OutputPath=${{ env.CS_Project_Directory }}\AppPackages
 
     - name: Build the application
-      run: dotnet publish -f net6.0-windows10.0.19041.0 -c Release -p:WindowsPackageType=None -o ${{ env.CS_Project_Directory }}\AppPackages
+      run: dotnet publish -f net8.0-windows10.0.22621.0 -c Release -p:WindowsPackageType=None -o ${{ env.CS_Project_Directory }}\AppPackages
 
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload build artifacts
