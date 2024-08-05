@@ -32,7 +32,7 @@
                 </Grid>
                 <Label  Text=">" FontFamily="Segoe UI" FontSize="16" VerticalOptions="Center" Padding="0,0,0,1"/>
                 <resources:BorderlessEntry Placeholder="{Binding Name}" Completed="OnChangeName" Style="{StaticResource EditableNav}"/>
-                <Label  Text=">" FontFamily="" FontSize="16" VerticalOptions="Center" Padding="0,0,0,1"/>
+                <Label  Text=">" FontFamily="Segoe UI" FontSize="16" VerticalOptions="Center" Padding="0,0,0,1"/>
                 <Picker x:Name="picker" SelectedIndexChanged="OnPickerSelectedIndexChanged">
                     <Picker.ItemsSource>
                         <x:Array Type="{x:Type x:String}">
