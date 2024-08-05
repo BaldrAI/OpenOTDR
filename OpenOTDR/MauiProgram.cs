@@ -25,6 +25,11 @@ namespace OpenOTDR
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+
+                fonts.AddFont("Segoe-UI.ttf", "Segoe UI");
+                fonts.AddFont("Segoe-UI-Semibold.ttf", "Segoe UI-Semibold");
+                fonts.AddFont("Segoe-UI-Bold.ttf", "Segoe UI-Bold");
+                fonts.AddFont("Segoe-UI-Italic.ttf", "Segoe UI-Italic");
             }).UseMauiCommunityToolkit();
             ;
 #if DEBUG
