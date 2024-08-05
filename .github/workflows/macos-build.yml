@@ -36,4 +36,4 @@ jobs:
       uses: actions/upload-artifact@v2.3.1
       with:
         name: macos-ci-build
-        path: src/${{ env.Solution_Name }}/bin/Release/net8.0-maccatalyst/maccatalyst-*/publish/*.pkg
+        path: src/${{ env.Solution_Name }}/bin/Release/net8.0-maccatalyst/
