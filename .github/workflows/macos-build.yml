@@ -1,0 +1,39 @@
+name: Build Mac
+
+on:
+  push:
+    branches: [ "main" ]
+  
+jobs:
+  build:
+    runs-on: macos-latest
+
+    env:
+      Solution_Name: OpenOTDR
+      CS_Project_Directory: OpenOTDR
+      CS_Project_Path: OpenOTDR/OpenOTDR.csproj
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Install MAUI Workloads
+      run: |
+        dotnet workload install maccatalyst --ignore-failed-sources
+        dotnet workload install maui --ignore-failed-sources
+
+    - name: Build MAUI MacCatalyst
+      run: dotnet publish ${{ env.CS_Project_Path }} -c Release -f net8.0-maccatalyst -p:BuildIpa=True
+
+    - name: Upload MacCatalyst Artifact
+      uses: actions/upload-artifact@v2.3.1
+      with:
+        name: macos-ci-build
+        path: ${{ env.Solution_Name }}/bin/Release/net8.0-maccatalyst/publish/*.pkg
