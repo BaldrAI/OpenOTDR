@@ -32,7 +32,7 @@ jobs:
         dotnet workload install maui --ignore-failed-sources
 
     - name: Restore Dependencies
-      run: dotnet restore ${{ env.CS_Project_Path }}
+      run: dotnet restore ${{ env.CS_Project_Path }} -f net8.0-maccatalyst
 
     - name: Build MAUI MacCatalyst
       run: dotnet build ${{ env.CS_Project_Path }} -c Release -f net8.0-maccatalyst --no-restore
