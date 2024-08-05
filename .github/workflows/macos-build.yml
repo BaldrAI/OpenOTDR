@@ -30,10 +30,10 @@ jobs:
         dotnet workload install maui --ignore-failed-sources
 
     - name: Build MAUI MacCatalyst
-      run: dotnet build ${{ env.CS_Project_Path }} -c Release -f net8.0-maccatalyst --os osx --self-contained
+      run: dotnet publish ${{ env.CS_Project_Path }} -c Release -f net8.0-maccatalyst -p:BuildIpa=True
 
     - name: Upload MacCatalyst Artifact
       uses: actions/upload-artifact@v2.3.1
       with:
         name: macos-ci-build
-        path: src/${{ env.Solution_Name }}/bin/Release/net8.0-maccatalyst/**/*.app/
+        path: src/${{ env.Solution_Name }}/bin/Release/net8.0-maccatalyst/maccatalyst-*/publish/*.pkg
