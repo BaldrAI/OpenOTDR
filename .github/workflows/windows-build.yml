@@ -40,7 +40,7 @@ jobs:
       run: dotnet restore $env:CS_Project_Path
 
     - name: Build the application
-      run: dotnet publish -f net8.0-windows10.0.22621.0 -c Release -p:WindowsPackageType=None -o ${{ env.CS_Project_Directory }}\AppPackages --self-contained
+      run: dotnet publish -f net8.0-windows10.0.22621.0 -c Release -p:WindowsPackageType=None -p:PublishTrimmed=true -r win-x64 -p:PublishSingleFile=true -o ${{ env.CS_Project_Directory }}\AppPackages --self-contained
       
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
