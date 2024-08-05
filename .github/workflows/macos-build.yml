@@ -3,8 +3,6 @@ name: Build Mac
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   
 jobs:
   build:
@@ -31,11 +29,8 @@ jobs:
         dotnet workload install maccatalyst --ignore-failed-sources
         dotnet workload install maui --ignore-failed-sources
 
-    - name: Restore Dependencies
-      run: dotnet restore ${{ env.CS_Project_Path }} -f net8.0-maccatalyst
-
     - name: Build MAUI MacCatalyst
-      run: dotnet build ${{ env.CS_Project_Path }} -c Release -f net8.0-maccatalyst --no-restore
+      run: dotnet build ${{ env.CS_Project_Path }} -p:PublishSingleFile=true -c Release -f net8.0-maccatalyst --self-contained
 
     - name: Upload MacCatalyst Artifact
       uses: actions/upload-artifact@v2.3.1
