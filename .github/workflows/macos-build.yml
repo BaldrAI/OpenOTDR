@@ -26,11 +26,6 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v2
-      with:
-        vs-version: '[17.10,)'
-
     - name: Install MAUI Workloads
       run: |
         dotnet workload install maccatalyst --ignore-failed-sources
