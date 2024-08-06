@@ -27,19 +27,13 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    - name: Set Version Variable
-      if: ${{ github.ref_type == 'tag' }}
-      env:
-        TAG: ${{ github.ref_name }}
-      run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
-
     - name: Install MAUI Workloads
       run: |
         dotnet workload install maccatalyst --ignore-failed-sources
         dotnet workload install maui --ignore-failed-sources
 
     - name: Build MAUI MacCatalyst
-      run: dotnet publish /p:Version=$(version) /p:ApplicationDisplayVersion=$(version) /p:ApplicationVersion=$(version) ${{ env.CS_Project_Path }} -c Release -f net8.0-maccatalyst -p:BuildIpa=True
+      run: dotnet publish ${{ env.CS_Project_Path }} -c Release -f net8.0-maccatalyst -p:BuildIpa=True
 
     - name: Upload MacCatalyst Artifact
       uses: actions/upload-artifact@v2.3.1

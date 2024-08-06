@@ -28,12 +28,6 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    - name: Set Version Variable
-      if: ${{ github.ref_type == 'tag' }}
-      env:
-        TAG: ${{ github.ref_name }}
-      run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
-
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v2
       with:
@@ -43,7 +37,7 @@ jobs:
       run: dotnet workload install maui
 
     - name: Build the application
-      run: dotnet publish /p:Version=$VERSION /p:ApplicationDisplayVersion=$VERSION /p:ApplicationVersion=$VERSION -f net8.0-windows10.0.22621.0 -c Release -p:WindowsPackageType=None -p:PublishSingleFile=true -o ${{ env.CS_Project_Directory }}\AppPackages --self-contained
+      run: dotnet publish -f net8.0-windows10.0.22621.0 -c Release -p:WindowsPackageType=None -p:PublishSingleFile=true -o ${{ env.CS_Project_Directory }}\AppPackages --self-contained
       
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
