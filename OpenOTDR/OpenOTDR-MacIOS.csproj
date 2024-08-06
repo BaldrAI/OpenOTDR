@@ -34,7 +34,6 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageId>$(AssemblyName)</PackageId>
 		<PackageProjectUrl>https://github.com/BaldrAI/OpenOTDR</PackageProjectUrl>
-		<PackageIcon>BaldrAI-Logo.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
