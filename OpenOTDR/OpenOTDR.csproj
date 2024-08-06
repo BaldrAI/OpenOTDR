@@ -2,15 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net8.0-windows10.0.22621.0</TargetFrameworks>
-		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
-
-		<!-- Note for MacCatalyst:
-		The default runtime is maccatalyst-x64, except in Release config, in which case the default is maccatalyst-x64;maccatalyst-arm64.
-		When specifying both architectures, use the plural <RuntimeIdentifiers> instead of the singular <RuntimeIdentifier>.
-		The Mac App Store will NOT accept apps with ONLY maccatalyst-arm64 indicated;
-		either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
-		<!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
 		<OutputType>Exe</OutputType>
 		<RootNamespace>OpenOTDR</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -35,7 +26,7 @@
 
 		<Description>
 			OpenOTDR makes Localising Faults, and Sharing Results easy.
-			A next-generation OTDR Fibre Test report solution. Enabling users to integrate OTDR traces with GIS data, view & label traces, and build reports.
+			A next-generation OTDR Fibre Test report solution. Enabling users to integrate OTDR traces with GIS data, and view and lable traces.
 			Coming Soon to iOS, Android, Mac, Windows, and Linux!
 		</Description>
 		<RepositoryUrl>https://github.com/BaldrAI/OpenOTDR</RepositoryUrl>

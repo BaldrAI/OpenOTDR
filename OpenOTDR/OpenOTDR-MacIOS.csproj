@@ -27,7 +27,7 @@
 
 		<Description>
 			OpenOTDR makes Localising Faults, and Sharing Results easy.
-			A next-generation OTDR Fibre Test report solution. Enabling users to integrate OTDR traces with GIS data, view & label traces, and build reports.
+			A next-generation OTDR Fibre Test report solution. Enabling users to integrate OTDR traces with GIS data, and view and lable traces.
 			Coming Soon to iOS, Android, Mac, Windows, and Linux!
 		</Description>
 		<RepositoryUrl>https://github.com/BaldrAI/OpenOTDR</RepositoryUrl>
