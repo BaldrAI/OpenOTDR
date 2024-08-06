@@ -41,6 +41,12 @@
 	  <ApplicationId>com.baldrai.openotdr</ApplicationId>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+		<MtouchInterpreter>all</MtouchInterpreter>
+		<PublishAot>false</PublishAot>
+		<UseInterpreter>True</UseInterpreter>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" />

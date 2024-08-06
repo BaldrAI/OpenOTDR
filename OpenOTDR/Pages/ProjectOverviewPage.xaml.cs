@@ -1,7 +1,7 @@
-﻿using fio = Microsoft.VisualBasic.FileIO;
+﻿using Microsoft.EntityFrameworkCore;
+using fio = Microsoft.VisualBasic.FileIO;
 using OpenOTDR.Models;
 using OpenOTDR.Services;
-using Microsoft.EntityFrameworkCore;
 
 namespace OpenOTDR.Pages;
 
@@ -57,7 +57,8 @@ public partial class ProjectOverviewPage : ContentPage
             {
                 { DevicePlatform.Android, new[] { "application/octet-stream", "application/kml" } }, // MIME type
                 { DevicePlatform.WinUI, new[] { ".sor", ".sod", "kml" } }, // file extension
-                { DevicePlatform.macOS, new[] { "sor", "sod", "kml" } } // UTType values
+                { DevicePlatform.MacCatalyst, new[] { "public.data" } },
+                { DevicePlatform.macOS, new[] { "public.data" } } // UTType values
             });
 
         PickOptions options = new()
@@ -101,6 +102,7 @@ public partial class ProjectOverviewPage : ContentPage
         }
         catch (Exception ex)
         {
+            
             // The user canceled or something went wrong
         }
     }
