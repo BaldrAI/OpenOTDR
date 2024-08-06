@@ -25,7 +25,7 @@
 		<ApplicationId>com.baldrai.openotdr</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>1.0-alpha</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.22621.0</SupportedOSPlatformVersion>
