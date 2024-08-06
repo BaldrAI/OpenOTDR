@@ -10,15 +10,35 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
+		<Company>BaldrAI</Company>
+		<Copyright>BaldrAI Ltd. 2024</Copyright>
+
 		<!-- Display name -->
 		<ApplicationTitle>OpenOTDR</ApplicationTitle>
+		<Title>OpenOTDR</Title>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.baldrai.openotdr</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+		<Version>1.0.0</Version>
+		<ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
+
+		<Description>
+			OpenOTDR makes Localising Faults, and Sharing Results easy.
+			A next-generation OTDR Fibre Test report solution. Enabling users to integrate OTDR traces with GIS data, view & label traces, and build reports.
+			Coming Soon to iOS, Android, Mac, Windows, and Linux!
+		</Description>
+		<RepositoryUrl>https://github.com/BaldrAI/OpenOTDR</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageId>$(AssemblyName)</PackageId>
+		<PackageProjectUrl>https://github.com/BaldrAI/OpenOTDR</PackageProjectUrl>
+		<PackageIcon>BaldrAI-Logo.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+		<PackageTags>otdr;sor;opensod;optical time delay reflectometry;optics;fibre;fiber</PackageTags>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">16.1</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
@@ -111,6 +131,21 @@
 	  <MauiXaml Update="Resources\Styles\ControlTemplates.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\BaldrAI-Logo.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	  <None Include="..\LICENSE.txt">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	  <None Include="..\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
 	</ItemGroup>
 
 </Project>
